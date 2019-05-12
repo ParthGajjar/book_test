@@ -1,0 +1,93 @@
+<html>
+
+<head>
+    <title>Book invoker</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/static/bootstrap-4.3.1-dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/fontawesome-free-5.8.1-web/css/all.css"/>
+    <script src="/static/jquery-3.4.0.min.js"></script>
+    <script src="/static/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+    <script src="/static/script.js"></script>
+    <style>
+        .btn{
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+        .line{
+            margin-top: 5px;
+            display: inline-block;
+        }
+        body {
+            position: relative;
+        }
+        .sidebar {
+            position: sticky;
+            top: 3rem;
+        }
+        .list-group-item {
+            padding: 0.40rem 1.25rem;
+        }
+        .table-bordered {
+            margin-bottom: 600px;
+        }
+        .kill_all{
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target="#list-example" data-offset="70">
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-3">
+                <div id="list-example" class="list-group sidebar">
+                    {% for chapter in chapters.keys() %}
+                    <a class="list-group-item list-group-item-action" href="#{{chapter.split('/')[-1]}}">
+                        {{chapter.split('/')[-1]}}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-9 mb-5">
+                <a class="btn btn-danger float-right mb-2 kill_all" href="/kill"> <i class="fas fa-skull"></i> Kill All</a>
+                <table class="table table-sm table-bordered table-hover">
+                    {% for chapter in chapters.keys() %}
+                        <tr class="table-secondary">
+                            <th>
+                                <h5 class="m-0" id="{{chapter.split('/')[-1]}}">{{chapter.split('/')[-1]}} </h5>
+                            </th>
+                        </tr>
+                        {% for recipe in chapters[chapter] %}
+                            <tr>
+                                <td class="{{ recipe in recipes and 'table-success' or ''}}"">
+                                <span class="line" id="{{ recipe in running_recipe and 'current_running' or '' }}">
+                                    {{'recipe_0' + recipe.split('/')[-1][1:]}}
+                                    <small class="text-muted"> {{recipe}} </small>
+                                </span>
+                                <span class="float-right">
+                                    {% if recipe in recipes %}
+                                        <a class="btn btn-outline-dark btn-sm" href="/incompleted?recipe={{recipe}}"><i class="fas fa-undo"></i> Incomplete</a>
+                                    {% else %}
+                                        {% if recipe in running_recipe %}
+                                            <a class="btn btn-danger btn-sm" href="/kill"> <i class="fas fa-skull"></i> Kill</a>
+                                        {% else %}
+                                            <a class="btn btn-info btn-sm" href="/run?path={{recipe}}"> <i class="fas fa-terminal"></i> Run</a>
+                                        {% endif %}
+                                        <a class="btn btn-success btn-sm" href="/completed?recipe={{recipe}}"><i class="fas fa-check-circle"></i> Complete</a>
+                                    {% endif %}
+                                </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
